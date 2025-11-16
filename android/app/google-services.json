@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "855890934747",
+    "project_id": "datatestapploginsignup",
+    "storage_bucket": "datatestapploginsignup.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855890934747:android:05e83a836ffe8ee66a85fe",
+        "android_client_info": {
+          "package_name": "com.example.learn1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBy5N7jqaqh3Arm9rHpAV_U9G_BnOr7Aeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
