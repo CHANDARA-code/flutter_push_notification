@@ -5,8 +5,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:push_notification/firebase_options.dart';
 import 'package:push_notification/model/push_notification_model.dart';
+import 'package:push_notification/screens/crash_analytics_demo_screen.dart';
 import 'package:push_notification/service/fcm_service.dart';
 import 'package:push_notification/utils/app_print/app_print.dart';
+
+/**
+ * 
+ * Push Notification via :
+ * - FCM token 
+ * - Group FCM 
+ * - Topic 
+*/
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -74,6 +83,32 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildTokenSection(),
           const Divider(),
           Expanded(child: _buildNotificationList()),
+          const Divider(),
+          Expanded(
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      elevation: 2,
+                      fixedSize: Size(40, 40),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CrashAnalyticsDemoScreen(),
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.bug_report, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -132,12 +167,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
-/**
- * 
- * Push Notification via :
- * - FCM token 
- * - Group FCM 
- * - Topic 
-*/

@@ -60,7 +60,7 @@ class FCMService {
 
   static Future<String?> getToken() async {
     try {
-      String? token = await _firebaseMessaging.getToken();
+      String? token = await _firebaseMessaging.getToken(); // FCM Token 
       if (kDebugMode) {
         AppPrint.info("FCM Token: $token");
       }
