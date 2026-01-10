@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.push_notification"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = "29.0.14206865"
 
     compileOptions {
