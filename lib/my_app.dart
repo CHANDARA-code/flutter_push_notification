@@ -1,7 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:push_notification/firebase_options.dart';
+import 'package:push_notification/model/push_notification_model.dart';
+import 'package:push_notification/service/fcm_service.dart';
 import 'package:push_notification/utils/app_print/app_print.dart';
 
 class MyApp extends StatelessWidget {
@@ -15,93 +19,125 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const HomeScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+class _HomeScreenState extends State<HomeScreen> {
+  String _token = "Fetching token...";
+  final List<PushNotification> _notifications = [];
+
   @override
   void initState() {
     super.initState();
-    initializeDefault();
-    var initializationSettingsAndroid = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
-    var initializationSettingsIOS =
-        DarwinInitializationSettings(); // IOS or MacOS
+    _setupToken();
 
-    var initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    // Listen for incoming messages to update UI list
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        AppPrint.info("data:${message.data} ");
+        setState(() {
+          _notifications.insert(
+            0,
+            PushNotification(
+              title: message.notification?.title,
+              body: message.notification?.body,
+              data: message.data,
+            ),
+          );
+        });
+      }
+    });
   }
 
-  Future<void> initializeDefault() async {
-    try {
-      FirebaseApp app = await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.android,
-      );
-      AppPrint.success('Initialized default app $app');
-    } catch (e) {
-      AppPrint.error("Error: $e");
-    }
+  Future<void> _setupToken() async {
+    String? token = await FCMService.getToken();
+    setState(() {
+      _token = token ?? "Error fetching token";
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Notification"),
-            TextButton(
-              onPressed: () {
-                showSimpleNotification();
-              },
-              child: Text(
-                "Click Push Notification",
-                style: TextStyle(fontSize: 24),
-              ),
-            ),
-          ],
-        ),
+      appBar: AppBar(title: const Text("Firebase Push Notifications")),
+      body: Column(
+        children: [
+          _buildTokenSection(),
+          const Divider(),
+          Expanded(child: _buildNotificationList()),
+        ],
       ),
     );
   }
 
-  void showSimpleNotification() async {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'high_importance_channel',
-      'High Importance Notifications',
-      channelDescription: 'Used for critical alerts',
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-      icon: '@mipmap/ic_launcher',
+  Widget _buildTokenSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      color: Colors.grey[200],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Device Token:",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          SelectableText(_token),
+          const SizedBox(height: 8),
+          ElevatedButton.icon(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: _token));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Token copied to clipboard")),
+              );
+            },
+            icon: const Icon(Icons.copy),
+            label: const Text("Copy Token"),
+          ),
+        ],
+      ),
     );
-    var iOSPlatformChannelSpecifics = DarwinNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics,
-    );
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      'Hello!',
-      'This is a simple notification.',
-      platformChannelSpecifics,
+  }
+
+  Widget _buildNotificationList() {
+    if (_notifications.isEmpty) {
+      return const Center(child: Text("No notifications received yet."));
+    }
+
+    return ListView.builder(
+      itemCount: _notifications.length,
+      itemBuilder: (context, index) {
+        final notification = _notifications[index];
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ListTile(
+            leading: const Icon(
+              Icons.notifications_active,
+              color: Colors.deepPurple,
+            ),
+            title: Text(notification.title ?? "No Title"),
+            subtitle: Text(notification.body ?? "No Body"),
+          ),
+        );
+      },
     );
   }
 }
+
+
+/**
+ * 
+ * Push Notification via :
+ * - FCM token 
+ * - Group FCM 
+ * - Topic 
+*/
