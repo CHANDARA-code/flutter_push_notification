@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:learn1/RowAndColunm.dart';
+import 'package:learn1/RowAndColunm.dart' hide MyApp;
 
 import 'package:learn1/main.dart';
 

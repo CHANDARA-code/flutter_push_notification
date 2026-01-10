@@ -1,77 +1,108 @@
 import 'package:flutter/material.dart';
 
-class ScaffW extends StatefulWidget{
-  const ScaffW({Key? key}) : super(key: key);
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
   @override
-  State<StatefulWidget> createState()=>_ScaffW();
-}
-class _ScaffW extends State<ScaffW>{
-  @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Center(
-            child: Row(
-              children: [
-                IconButton(onPressed: (){},
-                    icon: Icon(Icons.keyboard_backspace, color: Colors.white, size: 30,)
-                ),
-             Text('Hello world',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 25.0,
-                decoration: TextDecoration.underline,
-                decorationColor: Colors.red,
-              ),
-            ),
-                Spacer(),
-                Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                    onTap: () {},
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.search, color: Colors.white, size: 30),
-                        ),
-                ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.menu, color: Colors.white, size: 30),
-      ),
-                    ],
-                  ),
-                ),
-              ],
-          ),
-          ),
-          backgroundColor: Colors.blue,
-        ),
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Text('Hello World Flutter',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 30,
-                color: Colors.black,
-                // foreground: Paint()
-                //   ..color= Colors.black
-                //   ..style= PaintingStyle.stroke
-                //   ..strokeWidth= 2.0,
-                // fontWeight: FontWeight.w900,អក្សរ ដិត
-              ),
-
-            ),
-          ),
-
-        ),
-        backgroundColor: const Color(0x88FF99FF),
-      ),
-
+      home: ProductGridDemo(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
+class ProductGridDemo extends StatelessWidget {
+  final List<Product> products = [
+    Product('Laptop', '\$999', Icons.laptop, Colors.blue),
+    Product('Phone', '\$699', Icons.phone_android, Colors.green),
+    Product('Tablet', '\$499', Icons.tablet, Colors.orange),
+    Product('Watch', '\$299', Icons.watch, Colors.purple),
+    Product('Headphones', '\$199', Icons.headphones, Colors.red),
+    Product('Camera', '\$799', Icons.camera_alt, Colors.teal),
+    Product('Speaker', '\$399', Icons.speaker, Colors.pink),
+    Product('Monitor', '\$599', Icons.monitor, Colors.indigo),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Product Catalog - GridView.extent'),
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
+      ),
+      body: Column(
+        children: [
+          // Explanation banner
+          // GridView.extent
+          Expanded(
+            child: GridView.extent(
+              maxCrossAxisExtent: 200,    // Max tile width: 200px
+              padding: EdgeInsets.all(16),
+              crossAxisSpacing: 16,        // horizontal spacing
+              mainAxisSpacing: 16,         // vertical spacing
+              childAspectRatio: 0.75,      // width:height ratio (portrait)
+              children: products.map((product) {
+                return ProductCard(product: product);
+              }).toList(),
+            ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class Product {
+  final String name;
+  final String price;
+  final IconData icon;
+  final Color color;
+
+  Product(this.name, this.price, this.icon, this.color);
+}
+
+class ProductCard extends StatelessWidget {
+  final Product product;
+
+  ProductCard({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            product.icon,
+            size: 60,
+            color: product.color,
+          ),
+          SizedBox(height: 12),
+          Text(
+            product.name,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 8),
+          Text(
+            product.price,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.green[700],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
