@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.push_notification",
+      "sha256_cert_fingerprints": [
+        "52:20:94:48:AB:8B:94:93:A4:1B:38:D6:34:25:FC:AD:6C:32:DC:72:CB:99:A5:B4:23:92:A9:E3:A7:51:45:13"
+      ]
+    }
+  }
+]
