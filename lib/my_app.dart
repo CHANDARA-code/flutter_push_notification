@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:push_notification/firebase_options.dart';
 import 'package:push_notification/model/push_notification_model.dart';
+import 'package:push_notification/screens/analytics_screen.dart';
 import 'package:push_notification/screens/crash_analytics_demo_screen.dart';
 import 'package:push_notification/service/fcm_service.dart';
 import 'package:push_notification/utils/app_print/app_print.dart';
@@ -104,6 +105,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     icon: Icon(Icons.bug_report, color: Colors.white),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      elevation: 2,
+                      fixedSize: Size(40, 40),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AdvancedAnalyticsScreen(),
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.insights, color: Colors.white),
                   ),
                 ),
               ],

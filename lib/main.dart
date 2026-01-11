@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:push_notification/firebase_options.dart';
 import 'package:push_notification/my_app.dart';
+import 'package:push_notification/service/analytics_service.dart';
 import 'package:push_notification/service/fcm_service.dart';
 import 'package:push_notification/service/local_notification_service.dart';
 
@@ -34,5 +35,6 @@ FutureOr<void> main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true; // Return true to indicate the error has been handled
   };
+  await AnalyticsEngine().initialize();
   runApp(const MyApp());
 }
