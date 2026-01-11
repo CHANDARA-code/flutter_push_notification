@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:push_notification/firebase_options.dart';
 import 'package:push_notification/model/push_notification_model.dart';
+import 'package:push_notification/navigation/route_generator.dart';
 import 'package:push_notification/screens/analytics_screen.dart';
 import 'package:push_notification/screens/crash_analytics_demo_screen.dart';
 import 'package:push_notification/service/fcm_service.dart';
@@ -29,7 +30,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const HomeScreen(),
+      onGenerateRoute: RouteGenerator.generateRoute,
+      initialRoute: '/',
     );
   }
 }
@@ -124,6 +126,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     icon: Icon(Icons.insights, color: Colors.white),
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                      elevation: 2,
+                      fixedSize: Size(40, 40),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/product/123');
+                    },
+                    icon: Icon(Icons.alt_route, color: Colors.white),
                   ),
                 ),
               ],
